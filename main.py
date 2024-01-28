@@ -22,7 +22,7 @@ initial_meals = {
     3: {"name": "Margherita Pizza", "price": 10},
     4: {"name": "Caesar Salad", "price": 8},
     5: {"name": "Beef Stir-Fry", "price": 14},
-    6: {"name": "Vegetarian Lasagna", "price": 11},
+    6: {"name": "Adana Kebab", "price": 20},
     7: {"name": "Grilled Salmon", "price": 18},
     8: {"name": "Mushroom Risotto", "price": 13},
     9: {"name": "Classic Burger", "price": 9},
@@ -33,6 +33,12 @@ DATA = [["Meal Name", "Quantity", "Unit Cost", "Price ($)"]]
 meal_dict = {meal_id: meal_info["name"] for meal_id, meal_info in initial_meals.items()}
 meal_id_counter = max(initial_meals.keys()) + 1
 subtotal = 0
+discount_visable = 0
+discount = 0
+
+
+discount_codes = ["free", "FREE"]
+
 
 while True:
     print("Menu:\n")
@@ -44,13 +50,32 @@ while True:
     print()
 
     if meal_id_input.lower() == 'exit':
+        while True:
+            discount_code_input = input("Please enter a discount code or type 'continue' to proceed: ")
+            if discount_code_input.lower() == 'continue':
+                break
+            elif discount_code_input.lower() in discount_codes:
+                print(f"Discount applied for {discount_code_input}!")
+                discount_visable = 1
+                discount_percentage = 0.5
+                discount = subtotal * discount_percentage
+                print(f"Discount amount: ${discount}")
+                break
+            else:
+                print("Invalid discount code. Please enter a valid code or type 'continue'.")
+        tax = (subtotal * 3) / 100
         blank_row = [""]
         subtotal_row = ["Subtotal", "", "", f"${subtotal}"]
-        tax_row = ["Tax", "", "", f"${(subtotal * 3) / 100}"]
-        total_row = ["Total", "", "", f"${subtotal - ((subtotal * 3) / 100)}"]
+        tax_row = ["Tax (%3)", "", "", f"${tax}"]
+        total_row = ["Total", "", "", f"${(subtotal - discount) + tax}"]
         DATA.append(blank_row)
         DATA.append(subtotal_row)
         DATA.append(tax_row)
+        if discount_visable == 1:
+            discount_row = ["Discount (%5)", "", "", f"${discount}"]
+            DATA.append(discount_row)
+        else:
+            pass
         DATA.append(total_row)
         break
 
@@ -103,4 +128,4 @@ table = Table(DATA, style=style)
 
 spacer = Spacer(1, 20)
 
-pdf.build([time, title, table, spacer, text])
+pdf.build([time, title, spacer, table, spacer, text])
