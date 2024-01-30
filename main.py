@@ -17,90 +17,148 @@ turkey_now = datetime.now(tz=turkey_timezone)
 today = turkey_now.strftime("%Y/%m/%d - %H:%M:%S")
 
 initial_meals = {
-    1: {"name": "Spaghetti Bolognese", "price": 12},
-    2: {"name": "Chicken Alfredo", "price": 15},
-    3: {"name": "Margherita Pizza", "price": 10},
-    4: {"name": "Caesar Salad", "price": 8},
-    5: {"name": "Beef Stir-Fry", "price": 14},
-    6: {"name": "Adana Kebab", "price": 20},
-    7: {"name": "Grilled Salmon", "price": 18},
-    8: {"name": "Mushroom Risotto", "price": 13},
-    9: {"name": "Classic Burger", "price": 9},
-    10: {"name": "Chocolate Lava Cake", "price": 7},
+    1: {
+        "name": "Spaghetti Bolognese",
+        "price": 12
+    },
+    2: {
+        "name": "Chicken Alfredo",
+        "price": 15
+    },
+    3: {
+        "name": "Margherita Pizza",
+        "price": 10
+    },
+    4: {
+        "name": "Caesar Salad",
+        "price": 8
+    },
+    5: {
+        "name": "Beef Stir-Fry",
+        "price": 14
+    },
+    6: {
+        "name": "Adana Kebab",
+        "price": 20
+    },
+    7: {
+        "name": "Grilled Salmon",
+        "price": 18
+    },
+    8: {
+        "name": "Mushroom Risotto",
+        "price": 13
+    },
+    9: {
+        "name": "Classic Burger",
+        "price": 9
+    },
+    10: {
+        "name": "Chocolate Lava Cake",
+        "price": 7
+    },
 }
 
 DATA = [["Meal Name", "Quantity", "Unit Cost", "Price ($)"]]
-meal_dict = {meal_id: meal_info["name"] for meal_id, meal_info in initial_meals.items()}
+meal_dict = {
+    meal_id: meal_info["name"]
+    for meal_id, meal_info in initial_meals.items()
+}
 meal_id_counter = max(initial_meals.keys()) + 1
 subtotal = 0
 discount_visable = 0
 discount = 0
-
+tip = 0
 
 discount_codes = ["free", "FREE"]
 
-
 while True:
-    print("Menu:\n")
-    for meal_id, meal_info in initial_meals.items():
-        print(f"{meal_id}: {meal_info['name']} - ${meal_info['price']}")
-    print()
+  print("Menu:\n")
+  for meal_id, meal_info in initial_meals.items():
+    print(f"{meal_id}: {meal_info['name']} - ${meal_info['price']}")
+  print()
 
-    meal_id_input = input("Please enter the ID of the meal (You can type 'exit' to exit): ")
-    print()
+  meal_id_input = input(
+      "Please enter the ID of the meal (You can type 'exit' to exit): ")
+  print()
 
-    if meal_id_input.lower() == 'exit':
-        while True:
-            discount_code_input = input("Please enter a discount code or type 'continue' to proceed: ")
-            if discount_code_input.lower() == 'continue':
-                break
-            elif discount_code_input.lower() in discount_codes:
-                print(f"Discount applied for {discount_code_input}!")
-                discount_visable = 1
-                discount_percentage = 0.5
-                discount = subtotal * discount_percentage
-                print(f"Discount amount: ${discount}")
-                break
-            else:
-                print("Invalid discount code. Please enter a valid code or type 'continue'.")
-        tax = (subtotal * 3) / 100
-        blank_row = [""]
-        subtotal_row = ["Subtotal", "", "", f"${subtotal}"]
-        tax_row = ["Tax (%3)", "", "", f"${tax}"]
-        total_row = ["Total", "", "", f"${(subtotal - discount) + tax}"]
-        DATA.append(blank_row)
-        DATA.append(subtotal_row)
-        DATA.append(tax_row)
-        if discount_visable == 1:
-            discount_row = ["Discount (%5)", "", "", f"${discount}"]
-            DATA.append(discount_row)
-        else:
-            pass
-        DATA.append(total_row)
+  if meal_id_input.lower() == 'exit':
+    while True:
+      discount_code_input = input(
+          "Please enter a discount code or type 'continue' to proceed: ")
+      if discount_code_input.lower() == 'continue':
         break
+      elif discount_code_input.lower() in discount_codes:
+        print(f"Discount applied for {discount_code_input}!")
+        discount_visable = 1
+        discount_percentage = 0.05
+        discount = subtotal * discount_percentage
+        print(f"Discount amount: ${discount}")
+        break
+      else:
+        print(
+            "Invalid discount code. Please enter a valid code or type 'continue'."
+        )
 
+    tip_input = input(
+        "Would you like to leave a tip? (Enter the tip amount or '0' for no tip): "
+    )
     try:
-        meal_id_input = int(meal_id_input)
+      tip = float(tip_input)
+      if tip < 0:
+        print("Invalid tip amount. Please enter a non-negative value.")
+      else:
+        print(f"Tip added: ${tip}")
     except ValueError:
-        print("Invalid input. Please enter a valid meal ID.")
-        continue
+      print(
+          "Invalid input. Please enter a valid tip amount or '0' for no tip.")
 
-    if meal_id_input not in meal_dict:
-        print("Invalid meal ID. Please enter a valid ID from the menu.")
-        continue
+    # Calculations and table row creation
+    tax = (subtotal * 3) / 100
+    blank_row = [""]
+    subtotal_row = ["Subtotal", "", "", f"${subtotal}"]
+    tax_row = ["Tax (%3)", "", "", f"${tax}"]
+    total_row = ["Total", "", "", f"${(subtotal - discount) + tax + tip}"]
+    DATA.append(blank_row)
+    DATA.append(subtotal_row)
+    DATA.append(tax_row)
+    if discount_visable == 1:
+      discount_row = ["Discount (%5)", "", "", f"${discount}"]
+      DATA.append(discount_row)
+    else:
+      pass
+    if tip > 0:
+      tip_row = ["Tip", "", "", f"${tip}"]
+      DATA.append(tip_row)
+    else:
+      pass
+    DATA.append(total_row)
+    break  # Exit the main loop
 
-    meal_name = meal_dict[meal_id_input]
-    quantity = input("How Many: ")
-    print()
+  try:
+    meal_id_input = int(meal_id_input)
+  except ValueError:
+    print("Invalid input. Please enter a valid meal ID.")
+    continue
 
-    price = initial_meals[meal_id_input]["price"]
+  if meal_id_input not in meal_dict:
+    print("Invalid meal ID. Please enter a valid ID from the menu.")
+    continue
 
-    total_price = int(quantity) * price
-    subtotal += total_price
+  meal_name = meal_dict[meal_id_input]
+  quantity = input("How Many: ")
+  print()
 
-    new_row = [f"(#{meal_id_input}) {meal_name}", quantity, f"${price}", f"${total_price}"]
-    DATA.append(new_row)
+  price = initial_meals[meal_id_input]["price"]
 
+  total_price = int(quantity) * price
+  subtotal += total_price
+
+  new_row = [
+      f"(#{meal_id_input}) {meal_name}", quantity, f"${price}",
+      f"${total_price}"
+  ]
+  DATA.append(new_row)
 
 pdf = SimpleDocTemplate("receipt.pdf", pagesize=A4)
 styles = getSampleStyleSheet()
