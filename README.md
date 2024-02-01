@@ -23,7 +23,6 @@ This Python project comprises a simple console application for handling food ord
 
 - Install Dependencies
 - Run the Python Script:
-- 
 ```
 python your_script_name.py
 ```
