@@ -107,6 +107,8 @@ while True:
       tip = float(tip_input)
       if tip < 0:
         print("Invalid tip amount. Please enter a non-negative value.")
+      elif tip == 0:
+        pass
       else:
         print(f"Tip added: ${tip}")
     except ValueError:
