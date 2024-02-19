@@ -85,37 +85,36 @@ while True:
   if meal_id_input.lower() == 'exit':
     while True:
       discount_code_input = input(
-          "Please enter a discount code or type 'continue' to proceed: ")
-      if discount_code_input.lower() == 'continue':
+          "Please enter a discount code or type 'exit' to proceed: ")
+      if discount_code_input.lower() == 'exit':
         break
       elif discount_code_input.lower() in discount_codes:
         print(f"Discount applied for {discount_code_input}!")
         discount_visable = 1
         discount_percentage = 0.05
         discount = subtotal * discount_percentage
-        print(f"Discount amount: ${discount}")
+        print(f"Discount amount: ${int(discount)}")
         break
       else:
         print(
-            "Invalid discount code. Please enter a valid code or type 'continue'."
+            "Invalid discount code. Please enter a valid code or type 'exit'."
         )
 
     tip_input = input(
         "Would you like to leave a tip? (Enter the tip amount or '0' for no tip): "
     )
     try:
-      tip = float(tip_input)
+      tip = int(tip_input)
       if tip < 0:
         print("Invalid tip amount. Please enter a non-negative value.")
       elif tip == 0:
-        pass
+       pass
       else:
         print(f"Tip added: ${tip}")
     except ValueError:
       print(
           "Invalid input. Please enter a valid tip amount or '0' for no tip.")
 
-    # Calculations and table row creation
     tax = (subtotal * 3) / 100
     blank_row = [""]
     subtotal_row = ["Subtotal", "", "", f"${subtotal}"]
@@ -135,7 +134,7 @@ while True:
     else:
       pass
     DATA.append(total_row)
-    break  # Exit the main loop
+    break
 
   try:
     meal_id_input = int(meal_id_input)
